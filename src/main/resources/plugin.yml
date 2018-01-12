@@ -1,0 +1,8 @@
+name: PlayerVaultsGUI
+version: ${project.version}
+main: net.poweredbyawesome.playervaultsgui.PlayerVaultsGUI
+depend: [PlayerVaults, Vault]
+authors: [LaxWasHere]
+commands:
+  pvbuy:
+  pvgui:

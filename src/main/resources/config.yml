@@ -1,0 +1,38 @@
+gui:
+  name: "&f[&4Player Vaults Menu&f]"
+  fillitem: "STAINED_GLASS_PANE:15"
+unlocked:
+  name: "&7[&aUnlocked&7]"
+  item: 'STAINED_GLASS_PANE:5'
+  lore:
+    - "&2&m--------------------"
+    - "&f[&4Vault #<VAULTNUM>&f]"
+    - "&7[&aLeft-Click&7] To Open"
+    - "&2&m--------------------"
+locked:
+  name: "&7[&cLocked&7]"
+  item: 'STAINED_GLASS_PANE:14'
+  lore:
+    - "&c&m--------------------"
+    - "&f[&4Vault #<VAULTNUM>&f]"
+    - "&7[&aLeft-Click&7] To Purchase"
+    - "&3Cost&6: &2$&a<COST>"
+    - "&c&m--------------------"
+messages:
+  buySuccess: "&aYou bought &7Vault #<VAULTNUM>"
+defaultcost: 10000
+vaults:
+  1:
+    cost: 250
+  2:
+    cost: 500
+  3:
+    cost: 750
+  4:
+    cost: 1000
+  5:
+    cost: 1250
+  6:
+    cost: 1500
+  7:
+    cost: 1750
