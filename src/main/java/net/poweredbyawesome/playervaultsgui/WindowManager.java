@@ -3,6 +3,7 @@ package net.poweredbyawesome.playervaultsgui;
 import com.cloutteam.samjakob.gui.ItemBuilder;
 import com.cloutteam.samjakob.gui.buttons.GUIButton;
 import com.cloutteam.samjakob.gui.types.PaginatedGUI;
+import com.drtshock.playervaults.vaultmanagement.VaultOperations;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,7 +36,7 @@ public class WindowManager {
                 slot +=2;
                 size +=1;
             }
-            if (p.hasPermission("playervaults.amount."+s)) {
+            if (VaultOperations.checkPerms(p, Integer.valueOf(s))) {
                 String item = plugin.getConfig().getString("unlocked.item");
                 GUIButton button = new GUIButton(ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(plugin.getConfig().getString("unlocked.name")).lore(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), s)).build());
                 button.setListener(event -> {
@@ -48,6 +49,10 @@ public class WindowManager {
                 GUIButton button = new GUIButton(ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(plugin.getConfig().getString("locked.name")).lore(replaceStrings(plugin.getConfig().getStringList("locked.lore"), s)).build());
                 button.setListener(ev -> {
                     ev.setCancelled(true);
+                    if (!VaultOperations.checkPerms(p, Integer.valueOf(s))) {
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", String.valueOf(s))));
+                        return;
+                    }
                     if (plugin.chargeUser(p, s)) {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", String.valueOf(s))));
                         if (plugin.addPermission(p, s)) {
@@ -61,7 +66,7 @@ public class WindowManager {
             }
             slot++;
         }
-        menu.setInventorySize(size*9);
+        menu.setInventorySize(size*9); //Should break when there are too many vaults.
         String item = plugin.getConfig().getString("gui.fillitem");
         GUIButton fillButton = new GUIButton(ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(" ").build());
         fillButton.setListener(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));

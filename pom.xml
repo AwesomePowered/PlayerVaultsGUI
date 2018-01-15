@@ -96,5 +96,10 @@
             <artifactId>SpigotPaginatedGUI</artifactId>
             <version>1.3-SKRILLAX</version>
         </dependency>
+        <dependency>
+            <groupId>com.drtshock</groupId>
+            <artifactId>PlayerVaultsX</artifactId>
+            <version>4.0.2-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

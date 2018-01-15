@@ -20,6 +20,7 @@ locked:
     - "&c&m--------------------"
 messages:
   buySuccess: "&aYou bought &7Vault #<VAULTNUM>"
+  noVaultAccess: "&cPlease buy the previous vault first!"
 defaultcost: 10000
 vaults:
   1:
