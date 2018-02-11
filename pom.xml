@@ -6,7 +6,7 @@
 
     <groupId>net.poweredbyawesome</groupId>
     <artifactId>PlayerVaultsGUI</artifactId>
-    <version>0.1</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
 
     <name>PlayerVaultsGUI</name>
@@ -100,6 +100,7 @@
             <groupId>com.drtshock</groupId>
             <artifactId>PlayerVaultsX</artifactId>
             <version>4.0.2-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

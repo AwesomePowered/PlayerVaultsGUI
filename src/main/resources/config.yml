@@ -21,6 +21,7 @@ locked:
 messages:
   buySuccess: "&aYou bought &7Vault #<VAULTNUM>"
   noVaultAccess: "&cPlease buy the previous vault first!"
+  vaultLocked: "&cThis vault is locked"
 defaultcost: 10000
 vaults:
   1:

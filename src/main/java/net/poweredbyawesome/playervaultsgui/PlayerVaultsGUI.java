@@ -8,9 +8,12 @@ import net.milkbowl.vault.permission.Permission;
 import net.poweredbyawesome.playervaultsgui.commands.VaultBuyCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGuiCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -83,6 +86,13 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
 
     public boolean addPermission(Player p, String vaultNum) {
         return perms.playerAdd(null, p, "playervaults.amount."+vaultNum);
+    }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent ev) {
+        if (ev.getWhoClicked().getOpenInventory().getTitle().equalsIgnoreCase(ChatColor.translateAlternateColorCodes('&',getConfig().getString("gui.name")))) {
+            ev.setCancelled(true);
+        }
     }
 
 }

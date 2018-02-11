@@ -31,11 +31,7 @@ public class WindowManager {
         int slot = 10;
         int size = 3;
         for (String s : plugin.getConfig().getConfigurationSection("vaults").getKeys(false)) {
-            //Bukkit.broadcastMessage(i + "/7 = " + String.valueOf(i / 7.0) + " Whole: " + isWhole(i / 7.0));
-            if (isWhole(Integer.valueOf(s) / 8.0)) {
-                slot +=2;
-                size +=1;
-            }
+            Double slotMap = (Integer.valueOf(s) / 7.0);
             if (VaultOperations.checkPerms(p, Integer.valueOf(s))) {
                 String item = plugin.getConfig().getString("unlocked.item");
                 GUIButton button = new GUIButton(ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(plugin.getConfig().getString("unlocked.name")).lore(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), s)).build());
@@ -47,22 +43,34 @@ public class WindowManager {
             } else {
                 String item = plugin.getConfig().getString("locked.item");
                 GUIButton button = new GUIButton(ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(plugin.getConfig().getString("locked.name")).lore(replaceStrings(plugin.getConfig().getStringList("locked.lore"), s)).build());
-                button.setListener(ev -> {
-                    ev.setCancelled(true);
-                    if (!VaultOperations.checkPerms(p, Integer.valueOf(s))) {
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", String.valueOf(s))));
-                        return;
-                    }
-                    if (plugin.chargeUser(p, s)) {
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", String.valueOf(s))));
-                        if (plugin.addPermission(p, s)) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> { //wait for permissions to update first.
-                                p.performCommand("pvgui");
-                            }, 15);
+                if (getCost(s) == 0) {
+                    button.setListener(inventoryClickEvent -> {
+                        inventoryClickEvent.setCancelled(true);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.vaultLocked").replace("<VAULTNUM>", String.valueOf(s))));
+                    });
+
+                } else {
+                    button.setListener(ev -> {
+                        ev.setCancelled(true);
+                        if (!VaultOperations.checkPerms(p, Integer.valueOf(s)-1)) {
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", String.valueOf(s))));
+                            return;
                         }
-                    }
-                });
+                        if (plugin.chargeUser(p, s)) {
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", String.valueOf(s))));
+                            if (plugin.addPermission(p, s)) {
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> { //wait for permissions to update first.
+                                    p.performCommand("pvgui");
+                                }, 15);
+                            }
+                        }
+                    });
+                }
                 menu.setButton(slot, button);
+            }
+            if (isWhole(slotMap)) {
+                slot +=2;
+                size +=1;
             }
             slot++;
         }
@@ -70,7 +78,8 @@ public class WindowManager {
         String item = plugin.getConfig().getString("gui.fillitem");
         GUIButton fillButton = new GUIButton(ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(" ").build());
         fillButton.setListener(inventoryClickEvent -> inventoryClickEvent.setCancelled(true));
-        menu.fillInventory(fillButton);
+        menu.setFillInventoryBotton(fillButton);
+        menu.fillInventory();
         p.openInventory(menu.getInventory());
     }
 
@@ -79,10 +88,15 @@ public class WindowManager {
     }
 
     public List replaceStrings(List<String> lore, String vaultNum) {
-        int cost = plugin.getConfig().getInt("vaults."+vaultNum+".cost");
+        int cost = getCost(vaultNum);
         for (int i = 0; i < lore.size(); i++) {
-            lore.set(i, lore.get(i).replace("<COST>", String.valueOf((cost <= 0) ? plugin.getConfig().getInt("defaultcost") : cost)).replace("<VAULTNUM>", String.valueOf(vaultNum)));
+            lore.set(i, lore.get(i).replace("<COST>", String.valueOf(getCost(vaultNum))).replace("<VAULTNUM>", vaultNum));
         }
         return lore;
+    }
+
+    public int getCost(String vaultNum) {
+        int cost = plugin.getConfig().getInt("vaults."+vaultNum+".cost");
+        return (cost <= 0) ? plugin.getConfig().getInt("defaultcost") : cost;
     }
 }
