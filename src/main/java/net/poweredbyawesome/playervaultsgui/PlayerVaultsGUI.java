@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import net.poweredbyawesome.playervaultsgui.commands.VaultBuyCommand;
+import net.poweredbyawesome.playervaultsgui.commands.VaultGiveCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGuiCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +14,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,7 +29,7 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
     public static Economy econ = null;
     private static Permission perms = null;
     private boolean isVault = false;
-    ItemStack menuItem = ItemBuilder.start(Material.CHEST).name("&f[&4Player Vaults Menu&f]").lore("&7Vaults For Players", "&7Hold and Right Click", "&7[&aRight-Click To Open&7]", "&4&m---------------------").build();
+    public ItemStack menuItem = null;
 
     @Override
     public void onEnable() {
@@ -34,7 +38,14 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         getCommand("pvbuy").setExecutor(new VaultBuyCommand(this));
         getCommand("pvgui").setExecutor(new VaultGuiCommand(this));
+        getCommand("pvgive").setExecutor(new VaultGiveCommand(this));
         PaginatedGUI.prepare(this);
+        makeItem();
+    }
+
+    public void makeItem() {
+        String item = getConfig().getString("key.item");
+        menuItem = ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(getConfig().getString("key.name")).lore(getConfig().getStringList("key.lore")).build();
     }
 
 //    @EventHandler
@@ -44,10 +55,29 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
 //        }
 //    }
 //
-//    @EventHandler
-//    public void onJoin(PlayerJoinEvent ev) {
-//        ev.getPlayer().getInventory().setItemInMainHand(menuItem);
-//    }
+    @EventHandler
+    public void onJoin(PlayerJoinEvent ev) {
+        if (!ev.getPlayer().hasPlayedBefore() && getConfig().getBoolean("key.firstjoin")) {
+            ev.getPlayer().getInventory().addItem(menuItem);
+        }
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent ev) {
+        if (ev.getAction() == Action.RIGHT_CLICK_BLOCK || ev.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (ev.getPlayer().getItemInHand().equals(menuItem)) {
+                ev.setCancelled(true);
+                if (getConfig().getBoolean("key.consume")) {
+                    ItemStack itemStack = menuItem;
+                    itemStack.setAmount(ev.getPlayer().getItemInHand().getAmount() -1);
+                    ev.getPlayer().setItemInHand(itemStack);
+                    ev.getPlayer().updateInventory();
+                    ev.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("messages.consumeKey")));
+                }
+                new WindowManager(this, ev.getPlayer()).openVaultGUI();
+            }
+        }
+    }
 
     public void checkVault() {
         if (!setupEconomy()) {

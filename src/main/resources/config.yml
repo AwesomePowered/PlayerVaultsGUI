@@ -18,10 +18,22 @@ locked:
     - "&7[&aLeft-Click&7] To Purchase"
     - "&3Cost&6: &2$&a<COST>"
     - "&c&m--------------------"
+key:
+  consume: false
+  firstJoin: true
+  name: "&f[&4Player Vaults Menu&f]"
+  item: 'CHEST:0'
+  lore:
+    - "&c&m--------------------"
+    - "&7Vaults For Players"
+    - "&7Hold and Right Click"
+    - "&7[&aRight-Click To Open&7]"
+    - "&c&m--------------------"
 messages:
   buySuccess: "&aYou bought &7Vault #<VAULTNUM>"
   noVaultAccess: "&cPlease buy the previous vault first!"
   vaultLocked: "&cThis vault is locked"
+  consumeKey: "&aYou used a menu key"
 defaultcost: 10000
 vaults:
   1:
