@@ -1,13 +1,12 @@
 package net.poweredbyawesome.playervaultsgui;
 
-import com.cloutteam.samjakob.gui.ItemBuilder;
-import com.cloutteam.samjakob.gui.types.PaginatedGUI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import net.poweredbyawesome.playervaultsgui.commands.VaultBuyCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGiveCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGuiCommand;
+import net.poweredbyawesome.playervaultsgui.commands.VaultReloadCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,6 +18,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,22 +39,20 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         getCommand("pvbuy").setExecutor(new VaultBuyCommand(this));
         getCommand("pvgui").setExecutor(new VaultGuiCommand(this));
         getCommand("pvgive").setExecutor(new VaultGiveCommand(this));
-        PaginatedGUI.prepare(this);
+        getCommand("pvguireload").setExecutor(new VaultReloadCommand(this));
         makeItem();
     }
 
     public void makeItem() {
-        String item = getConfig().getString("key.item");
-        menuItem = ItemBuilder.start(Material.valueOf(item.split(":")[0])).data(Short.valueOf(item.split(":")[1])).name(getConfig().getString("key.name")).lore(getConfig().getStringList("key.lore")).build();
+        String[] item = getConfig().getString("key.item").split(":");
+        ItemStack itemStack = new ItemStack(Material.valueOf(item[0]), 1, Short.valueOf(item[1]));
+        ItemMeta im = itemStack.getItemMeta();
+        im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getConfig().getString("key.name")));
+        im.setLore(WindowManager.colour(getConfig().getStringList("key.lore")));
+        itemStack.setItemMeta(im);
+        menuItem = itemStack;
     }
 
-//    @EventHandler
-//    public void onChat(AsyncPlayerChatEvent ev) {
-//        if (ev.getMessage().equalsIgnoreCase("@gui")) {
-//            new WindowManager(this, ev.getPlayer()).openVaultGUI();
-//        }
-//    }
-//
     @EventHandler
     public void onJoin(PlayerJoinEvent ev) {
         if (!ev.getPlayer().hasPlayedBefore() && getConfig().getBoolean("key.firstjoin")) {
