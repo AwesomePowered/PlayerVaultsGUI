@@ -1,3 +1,4 @@
+override-pv: false
 gui:
   name: "&f[&4Player Vaults Menu&f]"
   fillitem: "STAINED_GLASS_PANE:15"
@@ -35,6 +36,11 @@ messages:
   vaultLocked: "&cThis vault is locked"
   consumeKey: "&aYou used a menu key"
 defaultcost: 10000
+defaultMatrix: true
+matrix:
+  - '         '
+  - ' xxxxxxx '
+  - 'b       f'
 vaults:
   1:
     cost: 250

@@ -125,6 +125,9 @@ public class WindowManager {
     }
 
     public String[] buildMatrix(int i) {
+        if (!plugin.getConfig().getBoolean("defaultMatrix")) {
+            return plugin.getConfig().getStringList("matrix").toArray(new String[0]);
+        }
         List<String> matrix = new ArrayList<>();
         matrix.add("         ");
         matrix.add(" xxxxxxx ");
