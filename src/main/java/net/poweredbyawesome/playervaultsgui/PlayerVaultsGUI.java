@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
@@ -51,6 +52,17 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         im.setLore(WindowManager.colour(getConfig().getStringList("key.lore")));
         itemStack.setItemMeta(im);
         menuItem = itemStack;
+    }
+
+    @EventHandler
+    public void onCommand(PlayerCommandPreprocessEvent ev) {
+        if (!getConfig().getBoolean("override-pv", false)) {
+            return;
+        }
+        if (ev.getMessage().equalsIgnoreCase("/pv") && ev.getPlayer().hasPermission("playervaults.gui.open")) {
+            ev.setCancelled(true);
+            new WindowManager(this, ev.getPlayer()).openVaultGUI();
+        }
     }
 
     @EventHandler
