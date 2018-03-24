@@ -1,5 +1,7 @@
 package net.poweredbyawesome.playervaultsgui;
 
+import com.drtshock.playervaults.PlayerVaults;
+import com.drtshock.playervaults.vaultmanagement.VaultHolder;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -7,6 +9,7 @@ import net.poweredbyawesome.playervaultsgui.commands.VaultBuyCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGiveCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGuiCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultReloadCommand;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -29,7 +33,6 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
 
     public static Economy econ = null;
     private static Permission perms = null;
-    private boolean isVault = false;
     public ItemStack menuItem = null;
 
     @Override
@@ -42,6 +45,7 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         getCommand("pvgive").setExecutor(new VaultGiveCommand(this));
         getCommand("pvguireload").setExecutor(new VaultReloadCommand(this));
         makeItem();
+        startMetrics();
     }
 
     public void makeItem() {
@@ -89,14 +93,21 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler
+    public void onClose(InventoryCloseEvent ev) {
+        if (ev.getInventory().getHolder() instanceof VaultHolder && getConfig().getBoolean("openOnVaultClose", false)) {
+            if (ev.getPlayer().hasPermission("playervaults.gui.open")) {
+                new WindowManager(this, (Player) ev.getPlayer()).openVaultGUI();
+            }
+        }
+    }
+
     public void checkVault() {
         if (!setupEconomy()) {
             getLogger().log(Level.WARNING, "In order to use the economy support, you must have vault.");
-            isVault = false;
             return;
         }
         setupPermissions();
-        isVault = true;
     }
 
     private boolean setupEconomy() {
@@ -128,11 +139,8 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         return perms.playerAdd(null, p, "playervaults.amount."+vaultNum);
     }
 
-    @EventHandler
-    public void onClick(InventoryClickEvent ev) {
-        if (ev.getWhoClicked().getOpenInventory().getTitle().equalsIgnoreCase(ChatColor.translateAlternateColorCodes('&',getConfig().getString("gui.name")))) {
-            ev.setCancelled(true);
-        }
+    public void startMetrics() {
+        Metrics metrics = new Metrics(this);
     }
 
 }

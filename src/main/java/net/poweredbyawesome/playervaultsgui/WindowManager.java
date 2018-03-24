@@ -3,6 +3,7 @@ package net.poweredbyawesome.playervaultsgui;
 import com.drtshock.playervaults.vaultmanagement.VaultOperations;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiPageElement;
+import de.themoep.inventorygui.GuiStateElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import org.bukkit.Bukkit;
@@ -25,7 +26,6 @@ public class WindowManager {
     }
 
     public void openVaultGUI() {
-        p.closeInventory();
         GuiElementGroup group = new GuiElementGroup('x');
         String[] unlocked = plugin.getConfig().getString("unlocked.item").split(":");
         String[] locked = plugin.getConfig().getString("locked.item").split(":");
@@ -69,9 +69,12 @@ public class WindowManager {
                                 if (plugin.chargeUser(p, s)) {
                                     p.sendMessage(colour(plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", s)));
                                     if (plugin.addPermission(p, s)) {
+                                        p.closeInventory();
                                         //wait for permissions to update first.
                                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this::openVaultGUI, 15);
                                     }
+                                } else {
+                                    p.sendMessage(colour("&cYou can't afford that!"));
                                 }
                                 return true;
                             },
@@ -81,12 +84,7 @@ public class WindowManager {
             }
         }
 
-//        for (int i = 0; i < 4200; i++) {
-//            group.addElement(new StaticGuiElement('x', new ItemStack(Material.APPLE, 1), "Item "+i));
-//        }
-
         InventoryGui gui = new InventoryGui(plugin, p, plugin.getConfig().getString("gui.name"), buildMatrix(group.size()));
-
         gui.addElement(new GuiPageElement('b', new ItemStack(Material.COAL, 1), GuiPageElement.PageAction.PREVIOUS, "&cPREVIOUS"));
         gui.addElement(new GuiPageElement('f', new ItemStack(Material.COAL, 1, (short) 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
         gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1, Short.valueOf(filler[1])));
