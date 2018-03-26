@@ -36,6 +36,7 @@ messages:
   noVaultAccess: "&cPlease buy the previous vault first!"
   vaultLocked: "&cThis vault is locked"
   consumeKey: "&aYou used a menu key"
+  insufficientFunds: "&cInsufficient Funds!"
 defaultcost: 10000
 defaultMatrix: true
 matrix:

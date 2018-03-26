@@ -74,7 +74,7 @@ public class WindowManager {
                                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this::openVaultGUI, 15);
                                     }
                                 } else {
-                                    p.sendMessage(colour("&cYou can't afford that!"));
+                                    p.sendMessage(colour(plugin.getConfig().getString("messages.insufficientFunds")));
                                 }
                                 return true;
                             },
