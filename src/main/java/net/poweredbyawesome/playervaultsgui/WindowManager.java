@@ -9,11 +9,16 @@ import de.themoep.inventorygui.StaticGuiElement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.Skull;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class WindowManager {
 
@@ -92,6 +97,88 @@ public class WindowManager {
         gui.addElement(group);
 
         gui.show(p);
+    }
+
+    public void openPlayersWindow() {
+        GuiElementGroup group = new GuiElementGroup('x');
+        String[] filler = plugin.getConfig().getString("gui.fillitem").split(":");
+        ItemStack skoole = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        SkullMeta skullMeta = (SkullMeta) skoole.getItemMeta();
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            skullMeta.setOwningPlayer(onlinePlayer);
+            skoole.setItemMeta(skullMeta);
+            group.addElement(new StaticGuiElement('x',
+                    skoole,
+                    click -> {
+                        p.closeInventory();
+                        openPlayersGui(onlinePlayer.getUniqueId());
+                        return true;
+                    },
+                    onlinePlayer.getDisplayName(),
+                    "&bOpen players' vault"
+            ));
+        }
+
+        InventoryGui gui = new InventoryGui(plugin, p, "&cOnline&4Players", buildMatrix(group.size()));
+        gui.addElement(new GuiPageElement('b', new ItemStack(Material.COAL, 1), GuiPageElement.PageAction.PREVIOUS, "&cPREVIOUS"));
+        gui.addElement(new GuiPageElement('f', new ItemStack(Material.COAL, 1, (short) 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
+        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1, Short.valueOf(filler[1])));
+        group.setFiller(gui.getFiller());
+        gui.addElement(group);
+
+        gui.show(p);
+    }
+
+
+    public void openPlayersGui(UUID uuid) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        if (!offlinePlayer.hasPlayedBefore()) {
+            p.sendMessage(colour(plugin.getConfig().getString("messages.player404", "&cPlayer not found!")));
+            return;
+        }
+        GuiElementGroup group = new GuiElementGroup('x');
+        String[] unlocked = plugin.getConfig().getString("unlocked.item").split(":");
+        String[] locked = plugin.getConfig().getString("locked.item").split(":");
+        String[] filler = plugin.getConfig().getString("gui.fillitem").split(":");
+
+        for (int vaultNum = 0; vaultNum < 100; vaultNum++) {
+            boolean hasPerm = (Bukkit.getPlayer(uuid) == null) ? plugin.getPerms().playerHas(null, offlinePlayer,"playervaults.amount." + String.valueOf(vaultNum)) : Bukkit.getPlayer(uuid).hasPermission("playervaults.amount." + String.valueOf(vaultNum));
+            if (hasPerm) {
+                List<String> infos = new ArrayList<>();
+                infos.add(plugin.getConfig().getString("unlocked.name"));
+                infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), String.valueOf(vaultNum)));
+                int finalVaultNum = vaultNum; //java so picky
+                group.addElement(new StaticGuiElement('x',
+                        new ItemStack(Material.valueOf(unlocked[0]), 1, Byte.valueOf(unlocked[1])),
+                        click -> {
+                            p.closeInventory();
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    p.performCommand("pv " + offlinePlayer.getName() + " " + finalVaultNum);
+                                }
+                            }.runTaskLater(plugin, 20);
+                            return true;
+                        },
+                        infos.toArray((new String[0]))
+                ));
+            } else {
+                break;
+            }
+        }
+
+        InventoryGui gui = new InventoryGui(plugin, p, "&b"+offlinePlayer.getName() + "'s &aVaults", buildMatrix(group.size()));
+        gui.addElement(new GuiPageElement('b', new ItemStack(Material.COAL, 1), GuiPageElement.PageAction.PREVIOUS, "&cPREVIOUS"));
+        gui.addElement(new GuiPageElement('f', new ItemStack(Material.COAL, 1, (short) 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
+        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1, Short.valueOf(filler[1])));
+        group.setFiller(gui.getFiller());
+        gui.addElement(group);
+
+        gui.show(p);
+    }
+
+    public void openPlayersGui(OfflinePlayer offlinePlayer) {
+        openPlayersGui(offlinePlayer.getUniqueId());
     }
 
     public boolean isWhole(double d) {

@@ -1,10 +1,10 @@
 package net.poweredbyawesome.playervaultsgui;
 
-import com.drtshock.playervaults.PlayerVaults;
 import com.drtshock.playervaults.vaultmanagement.VaultHolder;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
+import net.poweredbyawesome.playervaultsgui.commands.VaultAdminCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultBuyCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGiveCommand;
 import net.poweredbyawesome.playervaultsgui.commands.VaultGuiCommand;
@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -44,6 +43,7 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         getCommand("pvgui").setExecutor(new VaultGuiCommand(this));
         getCommand("pvgive").setExecutor(new VaultGiveCommand(this));
         getCommand("pvguireload").setExecutor(new VaultReloadCommand(this));
+        getCommand("pvadmin").setExecutor(new VaultAdminCommand(this));
         makeItem();
         startMetrics();
     }
@@ -137,6 +137,10 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
 
     public boolean addPermission(Player p, String vaultNum) {
         return perms.playerAdd(null, p, "playervaults.amount."+vaultNum);
+    }
+
+    public Permission getPerms() {
+        return perms;
     }
 
     public void startMetrics() {

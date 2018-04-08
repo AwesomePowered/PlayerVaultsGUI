@@ -37,6 +37,7 @@ messages:
   vaultLocked: "&cThis vault is locked"
   consumeKey: "&aYou used a menu key"
   insufficientFunds: "&cInsufficient Funds!"
+  player404: "&cPlayer not found!"
 defaultcost: 10000
 defaultMatrix: true
 matrix:

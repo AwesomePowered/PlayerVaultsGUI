@@ -8,3 +8,4 @@ commands:
   pvgui:
   pvgive:
   pvguireload:
+  pvadmin:
