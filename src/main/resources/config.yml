@@ -1,5 +1,6 @@
 override-pv: false
 openOnVaultClose: false
+disablePurchases: false
 gui:
   name: "&f[&4Player Vaults Menu&f]"
   fillitem: "STAINED_GLASS_PANE:15"

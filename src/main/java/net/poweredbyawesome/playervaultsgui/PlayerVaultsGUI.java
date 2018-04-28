@@ -79,7 +79,7 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent ev) {
         if (ev.getAction() == Action.RIGHT_CLICK_BLOCK || ev.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (ev.getPlayer().getItemInHand().equals(menuItem)) {
+            if (ev.getPlayer().getItemInHand().equals(menuItem) && ev.getPlayer().hasPermission("playervaults.gui.key.use")) {
                 ev.setCancelled(true);
                 if (getConfig().getBoolean("key.consume")) {
                     ItemStack itemStack = menuItem;
