@@ -181,7 +181,6 @@ public class WindowManager {
             for (int vaultNum = 1; vaultNum <= 100; vaultNum++) {
                 if (p.hasPermission("playervaults.amount." + String.valueOf(vaultNum))) {
                     String finalVaultNum = String.valueOf(vaultNum);
-                    Bukkit.broadcastMessage("has perm " + finalVaultNum);
                     List<String> infos = new ArrayList<>();
                     infos.add(plugin.getConfig().getString("unlocked.name"));
                     infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), String.valueOf(vaultNum)));
