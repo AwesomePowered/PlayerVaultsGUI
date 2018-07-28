@@ -1,6 +1,7 @@
 package net.poweredbyawesome.playervaultsgui;
 
 import com.drtshock.playervaults.vaultmanagement.VaultHolder;
+import com.drtshock.playervaults.vaultmanagement.VaultOperations;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -105,9 +106,10 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
     public void checkVault() {
         if (!setupEconomy()) {
             getLogger().log(Level.WARNING, "In order to use the economy support, you must have vault.");
-            return;
         }
-        setupPermissions();
+        if (!setupPermissions()) {
+            getLogger().log(Level.WARNING, "In order to use the permission support, you must have vault.");
+        }
     }
 
     private boolean setupEconomy() {
@@ -128,7 +130,6 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
         return perms != null;
     }
 
-
     public boolean chargeUser(Player p, String vaultNum) {
         int cost = getConfig().getInt("vaults."+vaultNum+".cost");
         EconomyResponse e = econ.withdrawPlayer(p, (cost <= 0) ? getConfig().getInt("defaultcost") : cost);
@@ -137,6 +138,21 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
 
     public boolean addPermission(Player p, String vaultNum) {
         return perms.playerAdd(null, p, "playervaults.amount."+vaultNum);
+    }
+
+    public boolean takePermission(Player p, String vaultNum) {
+        return perms.playerRemove(null, p, "playervaults.amount."+vaultNum);
+    }
+
+    /*
+    IDK if this method is in PVX but it probably should.
+     */
+    public int getMaxVaults(Player p) {
+        for (int vaultNum = 100; vaultNum >= 0; vaultNum--) {
+            if (VaultOperations.checkPerms(p, vaultNum))
+                return vaultNum;
+        }
+        return 0;
     }
 
     public Permission getPerms() {
