@@ -3,10 +3,10 @@ openOnVaultClose: false
 disablePurchases: false
 gui:
   name: "&f[&4Player Vaults Menu&f]"
-  fillitem: "STAINED_GLASS_PANE:15"
+  fillitem: "STAINED_GLASS_PANE"
 unlocked:
   name: "&7[&aUnlocked&7]"
-  item: 'STAINED_GLASS_PANE:5'
+  item: 'GREEN_STAINED_GLASS_PANE'
   lore:
     - "&2&m--------------------"
     - "&f[&4Vault #<VAULTNUM>&f]"
@@ -14,7 +14,7 @@ unlocked:
     - "&2&m--------------------"
 locked:
   name: "&7[&cLocked&7]"
-  item: 'STAINED_GLASS_PANE:14'
+  item: 'RED_STAINED_GLASS_PANE'
   lore:
     - "&c&m--------------------"
     - "&f[&4Vault #<VAULTNUM>&f]"
@@ -25,7 +25,7 @@ key:
   consume: false
   firstJoin: true
   name: "&f[&4Player Vaults Menu&f]"
-  item: 'CHEST:0'
+  item: 'CHEST'
   lore:
     - "&c&m--------------------"
     - "&7Vaults For Players"

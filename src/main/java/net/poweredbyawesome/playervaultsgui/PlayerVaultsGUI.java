@@ -51,7 +51,7 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
 
     public void makeItem() {
         String[] item = getConfig().getString("key.item").split(":");
-        ItemStack itemStack = new ItemStack(Material.valueOf(item[0]), 1, Short.valueOf(item[1]));
+        ItemStack itemStack = new ItemStack(Material.valueOf(item[0]), 1);
         ItemMeta im = itemStack.getItemMeta();
         im.setDisplayName(ChatColor.translateAlternateColorCodes('&', getConfig().getString("key.name")));
         im.setLore(WindowManager.colour(getConfig().getStringList("key.lore")));
@@ -80,7 +80,7 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent ev) {
         if (ev.getAction() == Action.RIGHT_CLICK_BLOCK || ev.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (ev.getPlayer().getItemInHand().equals(menuItem) && ev.getPlayer().hasPermission("playervaults.gui.key.use")) {
+            if (ev.getPlayer().getInventory().getItemInMainHand().isSimilar(menuItem) && ev.getPlayer().hasPermission("playervaults.gui.key.use")) {
                 ev.setCancelled(true);
                 if (getConfig().getBoolean("key.consume")) {
                     ItemStack itemStack = menuItem;

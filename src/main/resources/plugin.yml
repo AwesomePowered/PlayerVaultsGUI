@@ -3,6 +3,7 @@ version: ${project.version}
 main: net.poweredbyawesome.playervaultsgui.PlayerVaultsGUI
 depend: [PlayerVaults, Vault]
 authors: [LaxWasHere]
+api-version: 1.13
 commands:
   pvbuy:
   pvgui:

@@ -34,8 +34,8 @@ public class WindowManager {
 
         InventoryGui gui = new InventoryGui(plugin, p, plugin.getConfig().getString("gui.name"), buildMatrix(group.size()));
         gui.addElement(new GuiPageElement('b', new ItemStack(Material.COAL, 1), GuiPageElement.PageAction.PREVIOUS, "&cPREVIOUS"));
-        gui.addElement(new GuiPageElement('f', new ItemStack(Material.COAL, 1, (short) 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
-        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1, Short.valueOf(filler[1])));
+        gui.addElement(new GuiPageElement('f', new ItemStack(Material.CHARCOAL, 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
+        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1));
         group.setFiller(gui.getFiller());
         gui.addElement(group);
         gui.show(p);
@@ -44,7 +44,7 @@ public class WindowManager {
     public void openPlayersWindow() {
         GuiElementGroup group = new GuiElementGroup('x');
         String[] filler = plugin.getConfig().getString("gui.fillitem").split(":");
-        ItemStack skoole = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        ItemStack skoole = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta skullMeta = (SkullMeta) skoole.getItemMeta();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             skullMeta.setOwningPlayer(onlinePlayer);
@@ -64,7 +64,7 @@ public class WindowManager {
         InventoryGui gui = new InventoryGui(plugin, p, "&cOnline&4Players", buildMatrix(group.size()));
         gui.addElement(new GuiPageElement('b', new ItemStack(Material.COAL, 1), GuiPageElement.PageAction.PREVIOUS, "&cPREVIOUS"));
         gui.addElement(new GuiPageElement('f', new ItemStack(Material.COAL, 1, (short) 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
-        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1, Short.valueOf(filler[1])));
+        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1));
         group.setFiller(gui.getFiller());
         gui.addElement(group);
 
@@ -91,7 +91,7 @@ public class WindowManager {
                 infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), String.valueOf(vaultNum)));
                 int finalVaultNum = vaultNum; //java so picky
                 group.addElement(new StaticGuiElement('x',
-                        new ItemStack(Material.valueOf(unlocked[0]), 1, Byte.valueOf(unlocked[1])),
+                        new ItemStack(Material.valueOf(unlocked[0]), 1),
                         click -> {
                             p.closeInventory();
                             new BukkitRunnable() {
@@ -131,7 +131,7 @@ public class WindowManager {
                     infos.add(plugin.getConfig().getString("unlocked.name"));
                     infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), s));
                     group.addElement(new StaticGuiElement('x',
-                            new ItemStack(Material.valueOf(unlocked[0]), 1, Byte.valueOf(unlocked[1])),
+                            new ItemStack(Material.valueOf(unlocked[0]), 1),
                             click -> {
                                 p.performCommand("pv " + s);
                                 return true;
@@ -145,7 +145,7 @@ public class WindowManager {
 
                     if (getCost(s) == 0) {
                         group.addElement(new StaticGuiElement('x',
-                                new ItemStack(Material.valueOf(locked[0]), 1, Byte.valueOf(locked[1])),
+                                new ItemStack(Material.valueOf(locked[0]), 1),
                                 click -> {
                                     p.sendMessage(colour(plugin.getConfig().getString("messages.vaultLocked").replace("<VAULTNUM>", s)));
                                     return true;
@@ -154,7 +154,7 @@ public class WindowManager {
                         ));
                     } else {
                         group.addElement(new StaticGuiElement('x',
-                                new ItemStack(Material.valueOf(locked[0]), 1, Byte.valueOf(locked[1])),
+                                new ItemStack(Material.valueOf(locked[0]), 1),
                                 click -> {
                                     if (!VaultOperations.checkPerms(p, Integer.valueOf(s)-1)) {
                                         p.sendMessage(colour(plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", s)));
@@ -186,7 +186,7 @@ public class WindowManager {
                     infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), String.valueOf(vaultNum)));
                      //java so picky
                     group.addElement(new StaticGuiElement('x',
-                            new ItemStack(Material.valueOf(unlocked[0]), 1, Byte.valueOf(unlocked[1])),
+                            new ItemStack(Material.valueOf(unlocked[0]), 1),
                             click -> {
                                 p.closeInventory();
                                 new BukkitRunnable() {
