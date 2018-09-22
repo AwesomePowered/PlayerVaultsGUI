@@ -3,7 +3,7 @@ openOnVaultClose: false
 disablePurchases: false
 gui:
   name: "&f[&4Player Vaults Menu&f]"
-  fillitem: "STAINED_GLASS_PANE"
+  fillitem: "LIGHT_GRAY_STAINED_GLASS_PANE"
 unlocked:
   name: "&7[&aUnlocked&7]"
   item: 'GREEN_STAINED_GLASS_PANE'
