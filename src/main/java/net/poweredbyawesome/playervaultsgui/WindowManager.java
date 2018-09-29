@@ -63,7 +63,7 @@ public class WindowManager {
 
         InventoryGui gui = new InventoryGui(plugin, p, "&cOnline&4Players", buildMatrix(group.size()));
         gui.addElement(new GuiPageElement('b', new ItemStack(Material.COAL, 1), GuiPageElement.PageAction.PREVIOUS, "&cPREVIOUS"));
-        gui.addElement(new GuiPageElement('f', new ItemStack(Material.COAL, 1, (short) 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
+        gui.addElement(new GuiPageElement('f', new ItemStack(Material.CHARCOAL, 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
         gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1));
         group.setFiller(gui.getFiller());
         gui.addElement(group);
@@ -112,7 +112,7 @@ public class WindowManager {
         InventoryGui gui = new InventoryGui(plugin, p, "&b"+offlinePlayer.getName() + "'s &aVaults", buildMatrix(group.size()));
         gui.addElement(new GuiPageElement('b', new ItemStack(Material.COAL, 1), GuiPageElement.PageAction.PREVIOUS, "&cPREVIOUS"));
         gui.addElement(new GuiPageElement('f', new ItemStack(Material.COAL, 1, (short) 1), GuiPageElement.PageAction.NEXT, "&aNEXT"));
-        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1, Short.valueOf(filler[1])));
+        gui.setFiller(new ItemStack(Material.valueOf(filler[0]), 1));
         group.setFiller(gui.getFiller());
         gui.addElement(group);
 
@@ -212,7 +212,6 @@ public class WindowManager {
     }
 
     public List replaceStrings(List<String> lore, String vaultNum) {
-        int cost = getCost(vaultNum);
         for (int i = 0; i < lore.size(); i++) {
             lore.set(i, lore.get(i).replace("<COST>", String.valueOf(getCost(vaultNum))).replace("<VAULTNUM>", vaultNum));
         }
@@ -236,20 +235,21 @@ public class WindowManager {
     }
 
     public String[] buildMatrix(int i) {
+        String defMatrix = " xxxxxxx ";
         if (!plugin.getConfig().getBoolean("defaultMatrix")) {
             return plugin.getConfig().getStringList("matrix").toArray(new String[0]);
         }
         List<String> matrix = new ArrayList<>();
         matrix.add("         ");
-        matrix.add(" xxxxxxx ");
+        matrix.add(defMatrix);
         if (i >= 8) {
-            matrix.add(" xxxxxxx ");
+            matrix.add(defMatrix);
         }
         if (i >= 15) {
-            matrix.add(" xxxxxxx ");
+            matrix.add(defMatrix);
         }
         if (i >= 22) {
-            matrix.add(" xxxxxxx ");
+            matrix.add(defMatrix);
             matrix.add("b       f");
             return matrix.toArray(new String[0]);
         }
