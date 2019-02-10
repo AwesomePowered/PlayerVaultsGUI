@@ -14,7 +14,7 @@ unlocked:
     - "&f[&4Vault #<VAULTNUM>&f]"
     - "&7[&aLeft-Click&7] Open Vault"
 #    - "&7[&aMiddle-Click&7] Edit Name" #Optional lore when allowCustomization is true
-#    - "&7[&aLeft-Click&7] Edit Icon"
+#    - "&7[&aRight-Click&7] Edit Icon"
     - "&2&m--------------------"
 locked:
   name: "&7[&cLocked&7]"
