@@ -1,15 +1,19 @@
 package net.poweredbyawesome.playervaultsgui;
 
 import com.drtshock.playervaults.vaultmanagement.VaultOperations;
+import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
+import net.poweredbyawesome.playervaultsgui.data.PlayerData;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,10 +26,12 @@ public class WindowManager {
 
     private Player p;
     private PlayerVaultsGUI plugin;
+    PlayerData pd;
 
     public WindowManager(PlayerVaultsGUI pl, Player p) {
         this.plugin = pl;
         this.p = p;
+        this.pd = new PlayerData(pl, p.getUniqueId().toString());
     }
 
     public void openVaultGUI() {
@@ -124,30 +130,26 @@ public class WindowManager {
         String[] unlocked = plugin.getConfig().getString("unlocked.item").split(":");
         String[] locked = plugin.getConfig().getString("locked.item").split(":");
         if (!plugin.getConfig().getBoolean("disablePurchases")) {
-            for (String s : plugin.getConfig().getConfigurationSection("vaults").getKeys(false)) {
-                int vaultNum = Integer.valueOf(s);
-                if (VaultOperations.checkPerms(p, vaultNum)) {
+            for (String finalVaultNum : plugin.getConfig().getConfigurationSection("vaults").getKeys(false)) {
+                if (VaultOperations.checkPerms(p, Integer.valueOf(finalVaultNum))) {
                     List<String> infos = new ArrayList<>();
-                    infos.add(plugin.getConfig().getString("unlocked.name"));
-                    infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), s));
+                    infos.add(pd.getVaultName(finalVaultNum) != null ? pd.getVaultName(finalVaultNum) : plugin.getConfig().getString("unlocked.name"));
+                    infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), finalVaultNum));
+                    //TODO create button method
                     group.addElement(new StaticGuiElement('x',
                             new ItemStack(Material.valueOf(unlocked[0]), 1),
-                            click -> {
-                                p.performCommand("pv " + s);
-                                return true;
-                            },
+                            click -> createButton(finalVaultNum, click),
                             infos.toArray((new String[0]))
                     ));
                 } else {
                     List<String> infos = new ArrayList<>();
                     infos.add(plugin.getConfig().getString("locked.name"));
-                    infos.addAll(replaceStrings(plugin.getConfig().getStringList("locked.lore"), s));
-
-                    if (getCost(s) == 0) {
+                    infos.addAll(replaceStrings(plugin.getConfig().getStringList("locked.lore"), finalVaultNum));
+                    if (getCost(finalVaultNum) == 0) {
                         group.addElement(new StaticGuiElement('x',
                                 new ItemStack(Material.valueOf(locked[0]), 1),
                                 click -> {
-                                    p.sendMessage(colour(plugin.getConfig().getString("messages.vaultLocked").replace("<VAULTNUM>", s)));
+                                    p.sendMessage(colour(plugin.getConfig().getString("messages.vaultLocked").replace("<VAULTNUM>", finalVaultNum)));
                                     return true;
                                 },
                                 infos.toArray((new String[0]))
@@ -156,13 +158,13 @@ public class WindowManager {
                         group.addElement(new StaticGuiElement('x',
                                 new ItemStack(Material.valueOf(locked[0]), 1),
                                 click -> {
-                                    if (!VaultOperations.checkPerms(p, Integer.valueOf(s)-1)) {
-                                        p.sendMessage(colour(plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", s)));
+                                    if (!VaultOperations.checkPerms(p, Integer.valueOf(finalVaultNum)-1)) {
+                                        p.sendMessage(colour(plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", finalVaultNum)));
                                         return true;
                                     }
-                                    if (plugin.chargeUser(p, s)) {
-                                        p.sendMessage(colour(plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", s)));
-                                        if (plugin.addPermission(p, s)) {
+                                    if (plugin.chargeUser(p, finalVaultNum)) {
+                                        p.sendMessage(colour(plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", finalVaultNum)));
+                                        if (plugin.addPermission(p, finalVaultNum)) {
                                             p.closeInventory();
                                             //wait for permissions to update first.
                                             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this::openVaultGUI, 15);
@@ -177,26 +179,17 @@ public class WindowManager {
                     }
                 }
             }
-        } else {
+        } else { //Disabled purchases
             for (int vaultNum = 1; vaultNum <= 100; vaultNum++) {
                 if (VaultOperations.checkPerms(p, vaultNum)) {
                     String finalVaultNum = String.valueOf(vaultNum);
                     List<String> infos = new ArrayList<>();
-                    infos.add(plugin.getConfig().getString("unlocked.name"));
+                    infos.add(pd.getVaultName(finalVaultNum) != null ? pd.getVaultName(finalVaultNum) : plugin.getConfig().getString("unlocked.name"));
                     infos.addAll(replaceStrings(plugin.getConfig().getStringList("unlocked.lore"), String.valueOf(vaultNum)));
-                     //java so picky
+                     //TODO create button method
                     group.addElement(new StaticGuiElement('x',
-                            new ItemStack(Material.valueOf(unlocked[0]), 1),
-                            click -> {
-                                p.closeInventory();
-                                new BukkitRunnable() {
-                                    @Override
-                                    public void run() {
-                                        p.performCommand("pv " + finalVaultNum);
-                                    }
-                                }.runTaskLater(plugin, 15);
-                                return true;
-                            },
+                            new ItemStack(pd.getVaultItem(finalVaultNum) != null ? pd.getVaultItem(finalVaultNum) : Material.valueOf(unlocked[0]), 1),
+                            click -> createButton(finalVaultNum, click),
                             infos.toArray((new String[0]))
                     ));
                 } else {
@@ -205,6 +198,48 @@ public class WindowManager {
             }
         }
         return group;
+    }
+
+    private boolean createButton(String finalVaultNum, GuiElement.Click click) {
+        p.closeInventory();
+        ClickType type = click.getType();
+        if (type.isLeftClick()) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    p.performCommand("pv " + finalVaultNum);
+                }
+            }.runTaskLater(plugin, 15);
+        }
+        if (plugin.getConfig().getBoolean("allowCustomization") && p.hasPermission("playervaults.gui.customize")) {
+            if (type.name().equals("MIDDLE")) {
+                new AnvilGUI(plugin, p, "Enter Vault Name", (player, reply) -> {
+                    if (reply != null || reply.equals("")) {
+                        pd.setVaultName(finalVaultNum, reply);
+                        refresh();
+                        return null;
+                    }
+                    p.sendMessage(colour(plugin.getConfig().getString("messages.name404")));
+                    return "Invalid Name";
+                });
+            }
+            if (type.isRightClick()) {
+                new AnvilGUI(plugin, p, "Enter Vault Item", (player, reply) -> {
+                    if (Material.getMaterial(reply.toUpperCase()) != null) {
+                        pd.setVaultItem(finalVaultNum, reply.toUpperCase());
+                        refresh();
+                        return null;
+                    }
+                    p.sendMessage(colour(plugin.getConfig().getString("messages.item404")));
+                    return "Invalid Name";
+                });
+            }
+        }
+        return true;
+    }
+
+    private void refresh() {
+        openVaultGUI();
     }
 
     public void openPlayersGui(OfflinePlayer offlinePlayer) {

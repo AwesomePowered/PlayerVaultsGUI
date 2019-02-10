@@ -1,16 +1,20 @@
 override-pv: false
 openOnVaultClose: false
 disablePurchases: false
+#List of available items: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+allowCustomization: false
 gui:
   name: "&f[&4Player Vaults Menu&f]"
-  fillitem: "LIGHT_GRAY_STAINED_GLASS_PANE"
+  fillitem: "BLACK_STAINED_GLASS_PANE"
 unlocked:
   name: "&7[&aUnlocked&7]"
   item: 'GREEN_STAINED_GLASS_PANE'
   lore:
     - "&2&m--------------------"
     - "&f[&4Vault #<VAULTNUM>&f]"
-    - "&7[&aLeft-Click&7] To Open"
+    - "&7[&aLeft-Click&7] Open Vault"
+#    - "&7[&aMiddle-Click&7] Edit Name" #Optional lore when allowCustomization is true
+#    - "&7[&aLeft-Click&7] Edit Icon"
     - "&2&m--------------------"
 locked:
   name: "&7[&cLocked&7]"
@@ -39,6 +43,8 @@ messages:
   consumeKey: "&aYou used a menu key"
   insufficientFunds: "&cInsufficient Funds!"
   player404: "&cPlayer not found!"
+  item404: "&cInvalid Item!"
+  name404: "&cInvalid Name!"
 defaultcost: 10000
 defaultMatrix: true
 matrix:

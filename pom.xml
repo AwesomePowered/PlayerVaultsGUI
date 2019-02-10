@@ -6,7 +6,7 @@
 
     <groupId>net.poweredbyawesome</groupId>
     <artifactId>PlayerVaultsGUI</artifactId>
-    <version>0.1.13</version>
+    <version>0.1.14</version>
     <packaging>jar</packaging>
 
     <name>PlayerVaultsGUI</name>
@@ -79,13 +79,17 @@
             <id>bstats-repo</id>
             <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
+        <repository>
+            <id>wesjd-repo</id>
+            <url>https://nexus.wesjd.net/repository/thirdparty/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13-R0.1-SNAPSHOT</version>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -109,6 +113,11 @@
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>net.wesjd</groupId>
+            <artifactId>anvilgui</artifactId>
+            <version>1.2.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
