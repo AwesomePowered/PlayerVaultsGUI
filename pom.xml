@@ -6,7 +6,7 @@
 
     <groupId>net.poweredbyawesome</groupId>
     <artifactId>PlayerVaultsGUI</artifactId>
-    <version>0.1.14</version>
+    <version>0.1.15</version>
     <packaging>jar</packaging>
 
     <name>PlayerVaultsGUI</name>
@@ -84,8 +84,8 @@
             <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
         <repository>
-            <id>wesjd-repo</id>
-            <url>https://nexus.wesjd.net/repository/thirdparty/</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <version>1.16.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -105,13 +105,13 @@
         <dependency>
             <groupId>com.drtshock</groupId>
             <artifactId>PlayerVaultsX</artifactId>
-            <version>4.0.2-SNAPSHOT</version>
+            <version>4.1.15</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.themoep</groupId>
             <artifactId>inventorygui</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.4.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -119,9 +119,9 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>net.wesjd</groupId>
+            <groupId>com.github.WesJD.AnvilGUI</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.2.1-SNAPSHOT</version>
+            <version>master-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

@@ -33,12 +33,12 @@ public class VaultBuyCommand implements CommandExecutor {
         }
         if (StringUtils.isNumeric(vaultNum) && Integer.valueOf(vaultNum) <= plugin.getConfig().getConfigurationSection("vaults").getKeys(false).size()) {
             if (!VaultOperations.checkPerms(p, Integer.valueOf(vaultNum)-1)) {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", String.valueOf(vaultNum))));
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.noVaultAccess").replace("<VAULTNUM>", vaultNum)));
                 return false;
             }
             if (plugin.chargeUser(p, vaultNum)) {
                 plugin.addPermission(p, vaultNum);
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", String.valueOf(vaultNum))));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.buySuccess").replace("<VAULTNUM>", vaultNum)));
             }
         }
         return false;
