@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -213,26 +214,29 @@ public class WindowManager {
         }
         if (plugin.getConfig().getBoolean("allowCustomization") && p.hasPermission("playervaults.gui.customize")) {
             if (type.name().equals("MIDDLE")) {
-                new AnvilGUI(plugin, p, "Enter Vault Name", (player, reply) -> {
-                    if (reply != null || reply.equals("")) {
-                        pd.setVaultName(finalVaultNum, reply);
-                        refresh();
-                        return null;
-                    }
-                    p.sendMessage(colour(plugin.getConfig().getString("messages.name404")));
-                    return "Invalid Name";
-                });
+                new AnvilGUI.Builder()
+                        .onClick((slot, stateSnapshot) -> {
+                            if (Material.getMaterial(stateSnapshot.getText().toUpperCase()) != null) {
+                                pd.setVaultName(finalVaultNum, stateSnapshot.getText());
+                                refresh();
+                                return null;
+                            }
+                            p.sendMessage(colour(plugin.getConfig().getString("messages.item404")));
+                            return Arrays.asList(AnvilGUI.ResponseAction.close());
+                        })
+                        .text("Enter Vault Name");
             }
             if (type.isRightClick()) {
-                new AnvilGUI(plugin, p, "Enter Vault Item", (player, reply) -> {
-                    if (Material.getMaterial(reply.toUpperCase()) != null) {
-                        pd.setVaultItem(finalVaultNum, reply.toUpperCase());
-                        refresh();
-                        return null;
-                    }
-                    p.sendMessage(colour(plugin.getConfig().getString("messages.item404")));
-                    return "Invalid Name";
-                });
+                new AnvilGUI.Builder()
+                        .onClick((slot, stateSnapshot) -> {
+                            if (Material.getMaterial(stateSnapshot.getText().toUpperCase()) != null) {
+                                pd.setVaultItem(finalVaultNum, stateSnapshot.getText().toUpperCase());
+                                return Arrays.asList(AnvilGUI.ResponseAction.close());
+                            }
+                            p.sendMessage(colour(plugin.getConfig().getString("messages.item404")));
+                            return Arrays.asList(AnvilGUI.ResponseAction.close());
+                        })
+                        .text("Enter Vault Item");
             }
         }
         return true;

@@ -160,7 +160,7 @@ public final class PlayerVaultsGUI extends JavaPlugin implements Listener {
     }
 
     public void startMetrics() {
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, 2358);
     }
 
 }
