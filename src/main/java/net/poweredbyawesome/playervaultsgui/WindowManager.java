@@ -224,7 +224,9 @@ public class WindowManager {
                             p.sendMessage(colour(plugin.getConfig().getString("messages.item404")));
                             return Arrays.asList(AnvilGUI.ResponseAction.close());
                         })
-                        .text("Enter Vault Name");
+                        .text("Enter Vault Name")
+                        .plugin(plugin)
+                        .open(p);
             }
             if (type.isRightClick()) {
                 new AnvilGUI.Builder()
@@ -236,7 +238,9 @@ public class WindowManager {
                             p.sendMessage(colour(plugin.getConfig().getString("messages.item404")));
                             return Arrays.asList(AnvilGUI.ResponseAction.close());
                         })
-                        .text("Enter Vault Item");
+                        .text("Enter Vault Item")
+                        .plugin(plugin)
+                        .open(p);
             }
         }
         return true;
